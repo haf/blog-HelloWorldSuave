@@ -9,18 +9,18 @@ Albacore::Tasks::Versionizer.new :versioning
 desc 'Perform fast build (warn: doesn\'t d/l deps)'
 build :quick_build do |b|
   b.logging = 'detailed'
-  b.sln     = 'src/MyProj.sln'
+  b.sln     = 'HelloWorldSuave.sln'
 end
 
 desc 'restore all nugets as per the packages.config files'
 nugets_restore :restore do |p|
-  p.out = 'src/packages'
+  p.out = 'packages'
   p.exe = 'tools/NuGet.exe'
 end
 
 desc 'Perform full build'
 build :build => [:versioning, :restore] do |b|
-  b.sln = 'src/MyProj.sln'
+  b.sln = 'HelloWorldSuave.sln'
   # alt: b.file = 'src/MyProj.sln'
 end
 
