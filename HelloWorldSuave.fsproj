@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{C5565B25-4575-4D40-AD5C-AFFC81996119}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>HelloWorldSuave</RootNamespace>
+    <AssemblyName>HelloWorldSuave</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <Externalconsole>true</Externalconsole>
+    <Tailcalls>false</Tailcalls>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+    <Tailcalls>true</Tailcalls>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="FSharp.Core">
+      <HintPath>packages\FSharp.Core.3.0.0.2\lib\net40\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="policy.2.3.FSharp.Core">
+      <HintPath>packages\FSharp.Core.3.0.0.2\lib\net40\policy.2.3.FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NodaTime">
+      <HintPath>packages\NodaTime.1.3.0\lib\net35-Client\NodaTime.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Actor">
+      <HintPath>packages\FSharp.Actor-logary.2.0.0-beta1\lib\net40\FSharp.Actor.dll</HintPath>
+    </Reference>
+    <Reference Include="Logary">
+      <HintPath>packages\Intelliplan.Logary.2.0.0-beta1\lib\net40\Logary.dll</HintPath>
+    </Reference>
+    <Reference Include="Logary.Suave">
+      <HintPath>packages\Intelliplan.Logary.Suave.2.0.0-beta1\lib\net40\Logary.Suave.dll</HintPath>
+    </Reference>
+    <Reference Include="suave">
+      <HintPath>packages\Suave.0.18.0\lib\suave.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Intelliplan.JsonNet.NodaTime">
+      <HintPath>packages\Intelliplan.JsonNet.NodaTime.1.7.0\lib\net40\Intelliplan.JsonNet.NodaTime.dll</HintPath>
+    </Reference>
+    <Reference Include="Intelliplan.JsonNet">
+      <HintPath>packages\Intelliplan.JsonNet.1.7.0\lib\net40\Intelliplan.JsonNet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
