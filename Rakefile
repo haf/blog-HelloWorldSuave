@@ -25,4 +25,10 @@ end
 
 directory 'build/pkg'
 
+desc 'package it as a service'
+appspecs :package => [:build, 'build/pkg'] do |as|
+  as.files = %w|.appspec|
+  as.out   = 'build/pkg'
+end
+
 task :default => :build
