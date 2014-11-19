@@ -6,6 +6,8 @@ open Logary
 open Logary.Configuration
 open Logary.Targets
 
+open Logary.Suave
+
 [<EntryPoint>]
 let main argv =
   use logary =
@@ -15,5 +17,7 @@ let main argv =
     )
   let logger = logary.GetLogger("HelloWorldSuave.main")
   Logger.debug logger "Starting Web Server"
-  web_server default_config (OK "Hello World!")
+  web_server
+    { default_config with logger = SuaveAdapter(logger) }
+    (OK "Hello World!")
   0
