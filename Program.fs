@@ -1,4 +1,8 @@
-﻿open Suave
+﻿module HelloWorldSuave.Program
+
+open System.IO
+
+open Suave
 open Suave.Http.Successful
 open Suave.Web
 
@@ -8,8 +12,23 @@ open Logary.Targets
 
 open Logary.Suave
 
+open Nessos.UnionArgParser
+
+open HelloWorldSuave
+
+type Arguments =
+  | Public_Directory of string
+with
+  interface IArgParserTemplate with
+    member s.Usage =
+      match s with
+      | Public_Directory _ -> "where to read public files from"
+
 [<EntryPoint>]
 let main argv =
+  let parser = UnionArgParser.Create<Arguments>()
+  let root   = parser.Parse(argv).PostProcessResult(<@ Public_Directory @>, Path.GetFullPath)
+
   use logary =
     withLogary' "HelloWorldSuave" (
       // a new allow-all rule for 'console' with a 'console' target
@@ -18,6 +37,8 @@ let main argv =
   let logger = logary.GetLogger("HelloWorldSuave.main")
   Logger.debug logger "Starting Web Server"
   web_server
-    { default_config with logger = SuaveAdapter(logger) }
-    (OK "Hello World!")
+    { default_config
+      with logger      = SuaveAdapter(logger)
+           home_folder = Some root }
+    App.app
   0

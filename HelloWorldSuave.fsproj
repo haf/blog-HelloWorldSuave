@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -64,9 +64,13 @@
     <Reference Include="Intelliplan.JsonNet">
       <HintPath>packages\Intelliplan.JsonNet.1.7.0\lib\net40\Intelliplan.JsonNet.dll</HintPath>
     </Reference>
+    <Reference Include="UnionArgParser">
+      <HintPath>packages\UnionArgParser.0.8.2\lib\net40\UnionArgParser.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="App.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets" />
