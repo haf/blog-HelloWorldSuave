@@ -6,14 +6,6 @@
     <script src="/jquery.min.js"></script>
     <script src="/browser.js"></script>
     <script src="/login.js"></script>
-    <script type="text/javascript">
-    $(auth_state);
-    $(api_state);
-    $(function () { 
-      $("#cookie_cutter").click(delete_cookie);
-      $("#login_form").submit(submit_form); 
-    });
-    </script>
   </head>
   <body>
   <header>
@@ -49,5 +41,13 @@
   </fieldset>
 
   <button type="submit" id='cookie_cutter'>Delete cookies!</button>
+  <script type="text/javascript">
+    $(function () { 
+        $(auth_state);
+        $(api_state);
+        $("#cookie_cutter").click(delete_cookie);
+        $("#login_form").submit(submit_form); 
+        });
+</script>
   </body>
 </html>
