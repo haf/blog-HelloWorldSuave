@@ -5,7 +5,7 @@
     <title>Hello World Suave</title>
     <script src="/jquery.min.js"></script>
     <script src="/browser.js"></script>
-    <script>
+    <script type="text/javascript">
       function get_cookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
@@ -14,11 +14,11 @@
 
       var auth_state = function () {
         var $auth_state = $('#auth_state');
-        if (typeof get_cookie('auth') === 'undefined') {
+        if (typeof get_cookie('suave_session_id') === 'undefined') {
           $auth_state.text('no auth');
           $("#login").show();
         } else {
-          $auth_state.text('auth');
+          $auth_state.text('You are authenticated!');
           $("#login").hide();
         }
       };
