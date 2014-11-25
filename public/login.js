@@ -35,7 +35,7 @@ var delete_cookie = function(){
 var submit_form = function(evt){
   var usr = $('#username').val();
   var pw = $('#password').val();
-  var url = 'http://localhost:8083/api/secret'
+  var url = 'http://localhost:8083/login'
 
   var credentials = {
     id: 'dh37fgj492je',

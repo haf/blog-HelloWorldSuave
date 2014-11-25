@@ -136,7 +136,7 @@ let bind_hawk_request (skew : Duration)
   }
 
 /// Authenticate the request with the HawkCredential
-let authenticate (skew : Duration)
+let authenticate_api (skew : Duration)
                  (f_credential : string -> HawkCredential)
                  f_err
                  f_cont
@@ -144,18 +144,22 @@ let authenticate (skew : Duration)
   let cred_callback = Func<_, _> f_credential
   bind_req (bind_hawk_request skew cred_callback) f_cont f_err
 
-let authenticate' skew f_credential f_cont =
-  authenticate skew f_credential UNAUTHORIZED f_cont 
+let authenticate_api' skew f_credential f_cont =
+  authenticate_api skew f_credential UNAUTHORIZED f_cont 
+
+let authenticate_password (req : HttpRequest) ctx =
+    let form = (Suave.Types.form req)
+    if (form^^"user" = Some "foo") && (form^^"pw" = Some "bar") then ctx |> succeed else fail
 
 let def_duration = Duration.FromMinutes 10L
 
 let app user_repo =
   choose [
     url "/" >>= Files.browse_file' "index.html"
-    url "/login" >>= Session.session_support (TimeSpan.FromMinutes 30.) >>= Files.browse_file' "index.html"
+    url "/login" >>= request authenticate_password >>= Session.session_support (TimeSpan.FromMinutes 30.) >>= Files.browse_file' "index.html"
     url "/api_key" >>= OK "werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn" 
     url "/api/secret" >>=
-        authenticate' def_duration user_repo (fun p -> 
+        authenticate_api' def_duration user_repo (fun p -> 
             Writers.set_header "Content-Type" "application/json" >>=
             OK "200")
     Files.browse'
