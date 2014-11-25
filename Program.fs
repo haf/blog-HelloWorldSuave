@@ -31,7 +31,6 @@ let main argv =
   let parser = UnionArgParser.Create<Arguments>()
   let root   = parser.Parse(argv).PostProcessResult(<@ Public_Directory @>, Path.GetFullPath)
 
-  let user_repo =
 
   use logary =
     withLogary' "HelloWorldSuave" (
