@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Hello World Suave</title>
     <script src="/jquery.min.js"></script>
-
-    <script lang="javascript">
+    <script src="/browser.js"></script>
+    <script>
       function get_cookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
@@ -33,8 +33,59 @@
         }
       };
 
+      var submit_form = function(evt){
+        evt.preventDefault();
+        var usr = $('#username').val();
+        var pw = $('#password').val();
+
+        var url = 'http://localhost:8083/api/secret'
+
+        var credentials = {
+          id: 'dh37fgj492je',
+          key: 'werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn',
+          algorithm: 'sha256',
+          user: usr
+        };
+
+        var requestOptions = {
+          url: url,
+          method: 'POST',
+          host: 'localhost',
+          port: 8083
+          headers: {}
+        };
+
+        var credentialsFunc = function (id, callback) {
+          return callback(null, credentials);
+        };
+
+        $.post("/api/secret", function(data,status){
+          var header = hawk.client.header(url, req.method, { credentials: credentials });
+
+          $.ajax({
+            dataType: "json",
+            headers: { authorization: header.field },
+            url: url,
+            success: function (error, response, body) {
+              var isValid = hawk.client.authenticate(body, credentials, header.artifacts, {
+                payload: body.responseText,
+                required: true
+                });
+
+              if (isValid) {
+                $("#response").html(body.responseText);
+              }
+              else {
+                $("#response").html("not valid");
+              }
+           }
+          });
+        });
+      }
+
       $(auth_state);
       $(api_state);
+      $(function () { $("#login_form").submit(submit_form); });
     </script>
   </head>
   <body>
@@ -46,25 +97,26 @@
       <noscript>Enable JS to see your API token state</noscript>
     </div>
   </header>
+  <span id="response"/>
   <div id="contents">
     This is actually a static html file served from Suave.
   </div>
   <fieldset id="login">
-    <form method="POST" action="/login">
+    <form id="login_form" action="/login">
       <p>
         <label for="username">
           Username:
-          <input type="text" name="username"/>
+          <input id="username" type="text" name="username"/>
         </label>
       </p>
       <p>
         <label for="password">
           Password:
-          <input type="password" name="password"/>
+          <input id="password" type="password" name="password"/>
         </label>
       </p>
       <p>
-        <input type="submit" value="Log In!" />
+        <input type="submit" id="login_button" value="Log In!" />
       </p>
     </form>
   </fieldset>
