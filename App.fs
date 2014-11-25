@@ -156,7 +156,8 @@ let app user_repo =
     url "/api_key" >>= OK "werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn" 
     url "/api/secret" >>=
         authenticate' def_duration user_repo (fun p -> 
-            OK "09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0")
+            Writers.set_header "Content-Type" "application/json" >>=
+            OK "200")
     Files.browse'
     RequestErrors.NOT_FOUND "Nada"
     ]
