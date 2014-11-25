@@ -72,6 +72,8 @@
     <Reference Include="HawkNet">
       <HintPath>packages\HawkNet.1.4.2.0\lib\net45\HawkNet.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
