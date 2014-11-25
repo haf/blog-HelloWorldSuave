@@ -5,6 +5,7 @@
     <title>Hello World Suave</title>
     <script src="/jquery.min.js"></script>
     <script src="/browser.js"></script>
+
     <script type="text/javascript">
       function get_cookie(name) {
         var value = "; " + document.cookie;
@@ -15,7 +16,7 @@
       var auth_state = function () {
         var $auth_state = $('#auth_state');
         if (typeof get_cookie('suave_session_id') === 'undefined') {
-          $auth_state.text('no auth');
+          $auth_state.text('Not yet authenticated :(');
           $("#login").show();
         } else {
           $auth_state.text('You are authenticated!');
@@ -51,7 +52,7 @@
           url: url,
           method: 'POST',
           host: 'localhost',
-          port: 8083
+          port: 8083,
           headers: {}
         };
 
@@ -81,11 +82,13 @@
            }
           });
         });
-      }
+      };
 
-      $(auth_state);
-      $(api_state);
-      $(function () { $("#login_form").submit(submit_form); });
+    $(auth_state);
+    $(api_state);
+    $(function () { 
+      $("#login_form").submit(submit_form); 
+    });
     </script>
   </head>
   <body>
