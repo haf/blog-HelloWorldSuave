@@ -13,6 +13,92 @@ open Suave.Http.RequestErrors
 open NodaTime
 
 open HawkNet
+
+module Parse =
+  open System
+
+  let uri (s : string) =
+    match Uri.TryCreate (s, UriKind.RelativeOrAbsolute) with
+    | true, uri -> Choice1Of2 uri
+    | false, _  -> Choice2Of2 (sprintf "Could not parse '%s' into uri" s)
+
+// lacking Functors
+module Choice =
+  let map f = function
+    | Choice1Of2 v -> Choice1Of2 (f v)
+    | Choice2Of2 msg -> Choice2Of2 msg
+
+  let bind (f : 'a -> Choice<'b, 'c>) (v : Choice<'a, 'c>) =
+    match v with
+    | Choice1Of2 v -> f v
+    | Choice2Of2 c -> Choice2Of2 c
+
+  let from_opt on_missing = function
+    | None   -> Choice2Of2 on_missing
+    | Some x -> Choice1Of2 x
+
+  let (>>.) a f = bind f a
+
+module Model =
+
+  type ModelBinderBuilder() =
+    member x.Bind(v, f) = Choice.bind f v
+    member x.Return v = Choice1Of2 v
+    member x.ReturnFrom o = o
+    member x.Run(f) = f()
+    member x.Combine(v, f:unit -> _) = Choice.bind f v
+    member x.Delay(f : unit -> 'T) = f
+
+  let binding = ModelBinderBuilder()
+
+  open Suave
+  open Suave.Types
+  open Suave.Http
+  open Suave.Http.RequestErrors
+
+  let private _req c = c.request
+
+  let bind f_bind (f_cont : 'a -> WebPart) (f_err : 'b -> WebPart) : WebPart =
+    context (fun c -> match f_bind c with
+                      | Choice1Of2 m   -> f_cont m
+                      | Choice2Of2 err -> f_err err)
+
+  let bind_req f_bind f_cont f_err =
+    bind (_req >> f_bind) f_cont f_err
+
+  /// model bind from the request with f_bind, passing the bound result to f_cont
+  let bind_req' f_bind f_cont =
+    bind_req f_bind f_cont BAD_REQUEST
+
+  let header key f_bind (req : HttpRequest) =
+    (req.headers %% key)
+    |> Choice.from_opt (sprintf "Missing header '%s'" key)
+    |> Choice.bind f_bind
+
+  let form form_key f_bind (req : HttpRequest) =
+    (form req) ^^ form_key
+    |> Choice.from_opt (sprintf "Missing form field '%s'" form_key)
+    |> Choice.bind f_bind
+
+  let qs qs_key f_bind (req : HttpRequest) =
+    (query req) ^^ qs_key
+    |> Choice.from_opt (sprintf "Missing query string key '%s'" qs_key)
+    |> Choice.bind f_bind
+
+  let has_qs name =
+    request <| fun r ->
+      match (query r) ^^ name with
+      | Some _ -> never // continue running the pipeline
+      | None   -> BAD_REQUEST (sprintf "missing qs param: %s" name)
+
+  let has_form field f =
+    request <| fun r ->
+      match (Suave.Types.form r) ^^ field with
+      | Some value -> f value >> succeed
+      | None -> never
+
+open Model
+
 let bind_hawk_request (skew : Duration)
                       f_credential
                       (req : HttpRequest)
