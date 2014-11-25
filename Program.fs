@@ -31,6 +31,8 @@ let main argv =
   let parser = UnionArgParser.Create<Arguments>()
   let root   = parser.Parse(argv).PostProcessResult(<@ Public_Directory @>, Path.GetFullPath)
 
+  let user_repo =
+
   use logary =
     withLogary' "HelloWorldSuave" (
       // a new allow-all rule for 'console' with a 'console' target
@@ -45,5 +47,6 @@ let main argv =
     { default_config
       with logger      = SuaveAdapter(logger)
            home_folder = Some root }
+
     (App.app user_repo)
   0
