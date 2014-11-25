@@ -72,9 +72,8 @@ var submit_form = function(evt){
     //  alert(body.responseText);
     //}
   })
-  .fail(function(err) {
-    console.log("Oh my: errorz!");
-    console.log(err.statusCode);
+  .fail(function(jqXHR, textStatus) {
+    console.log(textStatus);
   });
 };
 
