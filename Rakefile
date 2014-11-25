@@ -23,6 +23,11 @@ build :build => [:versioning, :restore] do |b|
   b.sln = 'HelloWorldSuave.sln'
 end
 
+desc 'Start the webserver with default params'
+task :start => [:build] do 
+  sh 'mono bin/Debug/HelloWorldSuave.exe --public-directory public'
+end
+
 directory 'build/pkg'
 
 desc 'package it as a service'
