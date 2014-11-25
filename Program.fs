@@ -38,7 +38,7 @@ let main argv =
     )
   let logger = logary.GetLogger("HelloWorldSuave.main")
 
-  let user_repo = fun _ -> HawkCredential()
+  let user_repo id = HawkCredential( Id = id, Algorithm = "sha1", Key = "31415926535" )
 
   Logger.debug logger "Starting Web Server"
   web_server

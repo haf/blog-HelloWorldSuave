@@ -144,16 +144,16 @@ let authenticate (skew : Duration)
   let cred_callback = Func<_, _> f_credential
   bind_req (bind_hawk_request skew cred_callback) f_cont f_err
 
-let authenticate' skew f_credential =
-  let success p = Http.Successful.ACCEPTED "Authenicated"
+let authenticate' skew f_credential f_cont =
+  authenticate skew f_credential UNAUTHORIZED f_cont 
 
-  authenticate skew f_credential UNAUTHORIZED success 
+let def_duration = Duration.FromMinutes 10L
 
-let app =
+let app user_repo =
   choose [
     url "/" >>= Files.browse_file' "index.html"
     url "/login" >>= Session.session_support (TimeSpan.FromMinutes 30.)
     Files.browse'
-    url "/api_key" >>= OK "TODO"
-    url "/api/secret" >>= authenticate' Duration. >>= OK "09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0"
+    url "/api_key" >>= OK "31415926535" 
+    url "/api/secret" >>= authenticate' def_duration user_repo (fun p -> OK "09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0")
     ]
