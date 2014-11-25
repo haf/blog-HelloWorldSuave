@@ -63,8 +63,8 @@ module Model =
                       | Choice1Of2 m   -> f_cont m
                       | Choice2Of2 err -> f_err err)
 
-  let bind_req f_bind f_cont f_err =
-    bind (_req >> f_bind) f_cont f_err
+  let bind_req f_bind f_err =
+    bind (_req >> f_bind) f_err
 
   /// model bind from the request with f_bind, passing the bound result to f_cont
   let bind_req' f_bind f_cont =
@@ -129,7 +129,7 @@ let bind_hawk_request (skew : Duration)
           req.``method``,
           uri,
           f_credential,
-          auth_conf.ts_skew.ToTimeSpan().TotalMinutes |> int,
+          10,
           Func<_> contents)
           //, content_type)
         |> Choice1Of2
@@ -139,18 +139,21 @@ let bind_hawk_request (skew : Duration)
 let authenticate (skew : Duration)
                  (f_credential : string -> HawkCredential)
                  f_err
+                 f_cont
                  : WebPart =
   let cred_callback = Func<_, _> f_credential
-  bind_req (bind_hawk_request auth_conf cred_callback) f_cont f_err
+  bind_req (bind_hawk_request skew cred_callback) f_cont f_err
 
 let authenticate' skew f_credential =
-  authenticate skew f_credential UNAUTHORIZED
+  let success p = Http.Successful.ACCEPTED "Authenicated"
 
-//let app (user_repo : string -> HawkCredential) =
-//  choose [
-//    url "/" >>= Files.browse_file' "index.html"
-//    url "/login" >>= Session.session_support (TimeSpan.FromMinutes 30.)
-//    Files.browse'
-//    url "/api_key" >>= OK "TODO"
-//    url "/api/secret" (* hawk authenticate this*) >>= OK "09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0"
-//    ]
+  authenticate skew f_credential UNAUTHORIZED success 
+
+let app =
+  choose [
+    url "/" >>= Files.browse_file' "index.html"
+    url "/login" >>= Session.session_support (TimeSpan.FromMinutes 30.)
+    Files.browse'
+    url "/api_key" >>= OK "TODO"
+    url "/api/secret" >>= authenticate' Duration. >>= OK "09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0"
+    ]

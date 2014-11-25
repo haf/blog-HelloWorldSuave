@@ -31,7 +31,6 @@ let main argv =
   let parser = UnionArgParser.Create<Arguments>()
   let root   = parser.Parse(argv).PostProcessResult(<@ Public_Directory @>, Path.GetFullPath)
 
-
   use logary =
     withLogary' "HelloWorldSuave" (
       // a new allow-all rule for 'console' with a 'console' target
