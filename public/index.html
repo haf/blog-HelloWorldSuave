@@ -35,10 +35,8 @@
       };
 
       var submit_form = function(evt){
-        evt.preventDefault();
         var usr = $('#username').val();
         var pw = $('#password').val();
-
         var url = 'http://localhost:8083/api/secret'
 
         var credentials = {
@@ -48,39 +46,32 @@
           user: usr
         };
 
-        var requestOptions = {
-          url: url,
-          method: 'POST',
-          host: 'localhost',
-          port: 8083,
-          headers: {}
-        };
-
         var credentialsFunc = function (id, callback) {
           return callback(null, credentials);
         };
 
-        $.post("/api/secret", function(data,status){
-          var header = hawk.client.header(url, req.method, { credentials: credentials });
+        var header = hawk.client.header(url, req.method, { credentials: credentials });
 
-          $.ajax({
-            dataType: "json",
-            headers: { authorization: header.field },
-            url: url,
-            success: function (error, response, body) {
-              var isValid = hawk.client.authenticate(body, credentials, header.artifacts, {
-                payload: body.responseText,
-                required: true
-                });
+        $.ajax({
+          type: "POST",
+          url: url,
+          dataType: "json",
+          headers: { authorization: header.field },
+          success: function (error, response, body) {
+            var isValid = hawk.client.authenticate(body, credentials, header.artifacts, {
+              payload: body.responseText,
+              required: true
+              });
 
-              if (isValid) {
-                $("#response").html(body.responseText);
-              }
-              else {
-                $("#response").html("not valid");
-              }
-           }
-          });
+            if (isValid) {
+              $("#response").html(body.responseText);
+              alert(body.responseText);
+            }
+            else {
+              $("#response").html("not valid");
+              alert(body.responseText);
+            }
+         }
         });
       };
 
