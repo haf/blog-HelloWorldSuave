@@ -35,7 +35,7 @@ var delete_cookie = function(){
 var submit_form = function(evt){
   var usr = $('#username').val();
   var pw = $('#password').val();
-  var url = '/api/secret'
+  var url = 'http://localhost:8083/api/secret'
 
   var credentials = {
     id: 'dh37fgj492je',
@@ -57,6 +57,7 @@ var submit_form = function(evt){
     headers: { authorization: header.field }
   }) 
   .done(function (response) {
+    console.log("done");
     console.log(response);
     //var isValid = hawk.client.authenticate(body, credentials, header.artifacts, {
     //  payload: body.responseText,
@@ -73,7 +74,9 @@ var submit_form = function(evt){
     //}
   })
   .fail(function(jqXHR, textStatus) {
-    console.log(textStatus);
+    console.log("error");
+    console.log(jqXHR.status);
   });
+  return false;
 };
 

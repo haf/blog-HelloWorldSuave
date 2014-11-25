@@ -120,7 +120,7 @@ let bind_hawk_request (skew : Duration)
     else
       let! host         = header "host" Choice1Of2 req
       //let! content_type = header "content-type" Choice1Of2 req
-      let! uri          = Parse.uri req.url
+      let! uri          = Parse.uri "http://localhost:8083/api/secret" //req.url
       let contents      = fun () -> UTF8.to_string' req.raw_form
       return!
         Hawk.Authenticate(
@@ -152,8 +152,12 @@ let def_duration = Duration.FromMinutes 10L
 let app user_repo =
   choose [
     url "/" >>= Files.browse_file' "index.html"
-    url "/login" >>= Session.session_support (TimeSpan.FromMinutes 30.) >>= Http.Redirection.FOUND "/"
+    url "/login" >>= Session.session_support (TimeSpan.FromMinutes 30.) >>= Files.browse_file' "index.html"
     Files.browse'
+
     url "/api_key" >>= OK "werxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn" 
-    url "/api/secret" >>= authenticate' def_duration user_repo (fun p -> OK "09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0")
+    url "/api/secret" >>=
+        authenticate' def_duration user_repo (fun p -> 
+            OK "09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0")
+    RequestErrors.NOT_FOUND "Nada"
     ]
