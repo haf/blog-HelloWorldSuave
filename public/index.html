@@ -3,8 +3,70 @@
   <head>
     <meta charset="UTF-8">
     <title>Hello World Suave</title>
+    <script src="/jquery.min.js"></script>
+
+    <script lang="javascript">
+      function get_cookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+      }
+
+      var auth_state = function () {
+        var $auth_state = $('#auth_state');
+        if (typeof get_cookie('auth') === 'undefined') {
+          $auth_state.text('no auth');
+          $("#login").show();
+        } else {
+          $auth_state.text('auth');
+          $("#login").hide();
+        }
+      };
+
+      var api_state = function() {
+        var $api_state = $('#api_state');
+        var token = localStorage.api_token
+        if (typeof token === 'undefined') {
+          $api_state.text('no api token');
+        } else {
+          $api_state.text('api token');
+        }
+      };
+
+      $(auth_state);
+      $(api_state);
+    </script>
   </head>
   <body>
-    This is actually a static html file served from Suave
+  <header>
+    <div id="auth_state">
+      <noscript>Enable JS to see your authenticated state</noscript>
+    </div>
+    <div id="api_state">
+      <noscript>Enable JS to see your API token state</noscript>
+    </div>
+  </header>
+  <div id="contents">
+    This is actually a static html file served from Suave.
+  </div>
+  <fieldset id="login">
+    <form method="POST" action="/login">
+      <p>
+        <label for="username">
+          Username:
+          <input type="text" name="username"/>
+        </label>
+      </p>
+      <p>
+        <label for="password">
+          Password:
+          <input type="password" name="password"/>
+        </label>
+      </p>
+      <p>
+        <input type="submit" value="Log In!" />
+      </p>
+    </form>
+  </fieldset>
   </body>
 </html>
