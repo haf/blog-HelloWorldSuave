@@ -3,3 +3,4 @@ obj/
 packages/
 HelloWorldSuave.userprefs
 *.swp
+*.userprefs
